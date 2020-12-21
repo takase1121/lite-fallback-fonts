@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cflags="-Wall -shared -fPIC -llua -Isrc/lib/lua52"
+cflags="-Wall -shared -fPIC -llua -Ilite/src/lib/lua52"
 
 if [[ $* == *windows* ]]; then
   platform="windows"
