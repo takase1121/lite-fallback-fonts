@@ -17,5 +17,5 @@ if command -v ccache >/dev/null; then
 fi
 
 echo "Compiling ($platform)..."
-$compiler $cflags backupfont.c -o $outfile
+$compiler $cflags mkfontmap.c -o $outfile
 
