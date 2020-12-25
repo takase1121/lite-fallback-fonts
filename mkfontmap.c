@@ -2,6 +2,7 @@
 #include <errno.h>
 #include <string.h>
 #include <stdarg.h>
+#include <stdint.h>
 #include <stdlib.h>
 
 #define STB_TRUETYPE_IMPLEMENTATION
@@ -30,7 +31,7 @@ static void die(const char* fmt, ...) {
 }
 
 // convert integer to little-endian if necessary
-static int conv_int(int n) {
+static uint32_t conv_uint(int n) {
     int x = 1;
     if ( *((char*) &x) == 1 ) {
         return n;
@@ -71,7 +72,7 @@ int main(int argc, char* argv[]) {
         if (!ok) { continue; }
 
         // get codepoint available
-        for(int j = 0; j < UNICODE_MAX_CODEPOINT; j++) {
+        for(uint32_t j = 0; j < UNICODE_MAX_CODEPOINT; j++) {
             if (stbtt_FindGlyphIndex(&info, j) != 0) {
                 codepoints[j] = i - 1;
             }
@@ -91,7 +92,7 @@ int main(int argc, char* argv[]) {
 
     // write fonts passed to us
     for (int i = 2; i < argc; i++) {
-        int len = conv_int(strlen(argv[i]));
+        uint32_t len = conv_uint(strlen(argv[i]));
         fwrite((void*) &len, sizeof(int), 1, fp);
         fwrite((void*) argv[i], sizeof(char), len, fp);
     }
