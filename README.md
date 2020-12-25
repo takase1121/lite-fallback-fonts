@@ -13,13 +13,18 @@ As an example, you may specify a CJK-compatible font as fallback to render CJK c
 
 ### Configuration
 This plugin introduces a table `config.fallback_fonts` that can be set in `data/user/init.lua`.
+After configuring `config.fallback_fonts`, users are expected to call `initialize()`. See following example:
 ```lua
+-- other init.lua contents
+
+local initialize = require "plugins.fallbackfonts"
 config.fallback_fonts.enable = true
 config.fallback_fonts.preload_range = { lower = 0, upper = 0xFF }
 config.fallback_fonts.fontmap_file = path(PLUGINDIR .. "/fontmap.bin")
 config.fallback_fonts.fonts = {
   { path = path(EXEDIR .. "/data/fonts/monospace.ttf"), size = 13.5 },
 }
+initialize() -- this initialises the fontmap and everything else
 ```
 
 key | Usage
@@ -36,5 +41,5 @@ key | Usage
 - You are good to go.
 
 ### Known issues
-- Caret and selection don't work. I may consider working on them but it won't be that easy.
+- ~~Caret and selection don't work. I may consider working on them but it won't be that easy.~~ fixed.
 - IME selection box does not show up. This is a bug from lite and should be worked on there instead.
