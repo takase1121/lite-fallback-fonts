@@ -19,5 +19,5 @@ jobs:
       - name: Collect artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: 'plugin.zip'
+          name: 'plugin'
           path: 'plugin.zip'
