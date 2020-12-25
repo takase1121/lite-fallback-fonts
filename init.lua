@@ -1,4 +1,4 @@
--- A plugin to load backup fonts
+-- A plugin to load fallback
 -- modified from drawwhitespaces.lua
 
 local core = require "core"
@@ -9,17 +9,17 @@ local DocView = require "core.docview"
 local command = require "core.command"
 local Object = require "core.object"
 
-local utf8_explode = require "plugins.backupfonts.utfhelper"
+local utf8_explode = require "plugins.fallbackfonts.utfhelper"
 
 local path = system.absolute_path -- shorthand to normalise path
 
-local PLUGINDIR = path(EXEDIR .. "/data/plugins/backupfonts")
+local PLUGINDIR = path(EXEDIR .. "/data/plugins/fallbackfonts")
 
-config.backup_fonts = {}
-config.backup_fonts.enable = true
-config.backup_fonts.preload_range = { lower = 0, upper = 0xFF }
-config.backup_fonts.fontmap_file = path(PLUGINDIR .. "/fontmap.bin")
-config.backup_fonts.fonts = {
+config.fallback_fonts = {}
+config.fallback_fonts.enable = true
+config.fallback_fonts.preload_range = { lower = 0, upper = 0xFF }
+config.fallback_fonts.fontmap_file = path(PLUGINDIR .. "/fontmap.bin")
+config.fallback_fonts.fonts = {
   { path = path(EXEDIR .. "/data/fonts/monospace.ttf"), size = 13.5 },
 }
 
@@ -111,16 +111,16 @@ end
 -----------------------------------------------------------
 ---- MAIN
 -----------------------------------------------------------
-local fontmap = Fontmap(config.backup_fonts.fontmap_file, config.backup_fonts.preload_range)
+local fontmap = Fontmap(config.fallback_fonts.fontmap_file, config.fallback_fonts.preload_range)
 local fonts = {}
 
-local user_enable = config.backup_fonts.enable -- regardless of user decision, this must be disabled during startup
-config.backup_fonts.enable = false
+local user_enable = config.fallback_fonts.enable -- regardless of user decision, this must be disabled during startup
+config.fallback_fonts.enable = false
 
 --- check if fontmap is generated properly
 local function validate_fontmap()
   local failed = 0
-  for _, f in ipairs(config.backup_fonts.fonts) do
+  for _, f in ipairs(config.fallback_fonts.fonts) do
     local i = fontmap.fonts[f.path] -- font index in file
     if i == nil then
       core.log_quiet("Unable to load font %q", f.path)
@@ -137,12 +137,12 @@ end
 -- A function to wait an initialise
 local function wait_for_generation()
   while true do
-    local stat = system.get_file_info(config.backup_fonts.fontmap_file)
+    local stat = system.get_file_info(config.fallback_fonts.fontmap_file)
     if stat and stat.size > 0xFFFF then -- since we generate up to 0xFFFF, this has to be the minimum size
       core.log("Generation complete.")
       fontmap:open()
       validate_fontmap()
-      config.backup_fonts.enable = user_enable
+      config.fallback_fonts.enable = user_enable
       return
     end
     coroutine.yield()
@@ -152,8 +152,8 @@ end
 --- generate fontmap
 local function generate_fontmap()
   local exepath = path(PLUGINDIR .. is_windows() and "mkfontmap.exe" or "mkfontmap"
-  local args = { config.backup_fonts.fontmap_file }
-  for i, v in ipairs(config.backup_fonts.fonts) do
+  local args = { config.fallback_fonts.fontmap_file }
+  for i, v in ipairs(config.fallback_fonts.fonts) do
     args[i + 1] = v.path
   end
 
@@ -165,7 +165,7 @@ local function generate_fontmap()
   core.add_thread(wait_for_generation)
 end
 
-if not file_exists(config.backup_fonts.fontmap_file) then
+if not file_exists(config.fallback_fonts.fontmap_file) then
   local generate = system.show_confirm_dialog(
     "Backup fonts",
     "Fontmap not found. Generate a new one?"
@@ -174,12 +174,12 @@ if not file_exists(config.backup_fonts.fontmap_file) then
 else
   fontmap:open()
   validate_fontmap()
-  config.backup_fonts.enable = user_enable
+  config.fallback_fonts.enable = user_enable
 end
 
 local draw_line_text = DocView.draw_line_text -- save the original just in case it is disabled
 function DocView:draw_line_text(idx, x, y)
-  if not config.backup_fonts.enable then
+  if not config.fallback_fonts.enable then
     draw_line_text(self, idx, x, y)
     return
   end
@@ -202,7 +202,8 @@ function DocView:draw_line_text(idx, x, y)
 end
 
 command.add("core.docview", {
-  ["backup-fonts:toggle"]  = function() config.backup_fonts.enable = not config.backup_fonts.enable end,
-  ["backup-fonts:disable"] = function() config.backup_fonts.enable = false                          end,
-  ["backup fonts:enable"]  = function() config.backup_fonts.enable = true                           end,
+  ["fallback-fonts:toggle"]         = function() config.fallback_fonts.enable = not config.fallback_fonts.enable end,
+  ["fallback-fonts:enable"]         = function() config.fallback_fonts.enable = true                             end,
+  ["fallback-fonts:disable"]        = function() config.fallback_fonts.enable = false                            end,
+  ["fallback-fonts:delete-fontmap"] = function() os.remove(config.fallback_fonts.fontmap_file)                   end, 
 })
