@@ -2,7 +2,6 @@
 -- modified from drawwhitespaces.lua
 
 local core = require "core"
-local common = require "core.common"
 local config = require "core.config"
 local style = require "core.style"
 local DocView = require "core.docview"
@@ -28,18 +27,17 @@ config.fallback_fonts.fonts = {
 ---------------------------------------------------------------
 ---- Utilities and classes
 ---------------------------------------------------------------
-
 --- check if file exists by stat(). This may fail, but who cares
 local function file_exists(p)
   return system.get_file_info(p) ~= nil
 end
-  
+
 --- convert arbitary bytes to number
 local function byte_to_number(b)
   local n = {string.byte(b, 1, -1)}
   local result = 0;
   local j = 0
-  for i, v in ipairs(n) do
+  for _, v in ipairs(n) do
     result = bit32.bor(result, bit32.lshift(v, j))
     j = j + 8
   end
@@ -85,10 +83,10 @@ end
 --- Open font map (maybe) can be used to reload it too
 function Fontmap:open()
   self.f = io.open(self.filename, "r")
-  
+
   local fontlen = self.f:read(1)
   self.nfonts = string.byte(fontlen)
-  
+
   -- read font list
   -- font list never had index 0; 0 indicates that no font was available.
   for i = 1, self.nfonts, 1 do
@@ -112,7 +110,6 @@ function Fontmap:cp(i)
   end
   return self.map[i]
 end
-
 
 -----------------------------------------------------------
 ---- MAIN
