@@ -1,5 +1,5 @@
 #!/bin/bash
-
+./build.sh
 ./build.sh windows
 rm plugin.zip 2>/dev/null
 

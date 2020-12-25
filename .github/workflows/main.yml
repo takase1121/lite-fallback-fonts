@@ -8,25 +8,16 @@ on:
 
 jobs:
   deploy:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
-      - name: Setup msys2
-        uses: msys2/setup-msys2@v2
-        with:
-          update: true
-          install: >-
-            base-devel
-            zip
-            mingw-w64-x86_64-toolchain
+      - name: Setup toolchain
+        run: sudo apt install build-essential gcc-mingw-w64-x86-64 zip
       - name: Checkout
         uses: actions/checkout@v2
       - name: Compile
-        
-        shell: msys2 {0}
-        run: |
-          ./build_release.sh
+        run: ./build_release.sh
       - name: Collect artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: 'win32-plugin.zip'
+          name: 'plugin.zip'
           path: 'plugin.zip'
