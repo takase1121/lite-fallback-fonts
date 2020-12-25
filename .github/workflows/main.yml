@@ -10,8 +10,7 @@ jobs:
   deploy:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Compile
+      - name: Setup msys2
         uses: msys2/setup-msys2@v2
         with:
           update: true
@@ -19,6 +18,10 @@ jobs:
             base-devel
             zip
             mingw-w64-x86_64-toolchain
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Compile
+        
         shell: msys2 {0}
         run: |
           ./build_release.sh
