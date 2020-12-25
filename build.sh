@@ -1,5 +1,5 @@
 #!/bin/bash
-cflags="-Wall -O3 -g -std=gnu11 -fno-strict-aliasing"
+cflags="-Wall -O3 -g -std=gnu11 -fno-strict-aliasing -lm"
 
 if [[ $* == *windows* ]]; then
   platform="windows"
