@@ -12,6 +12,7 @@ local utf8_explode = require "plugins.fallbackfonts.utfhelper"
 local path = system.absolute_path -- shorthand to normalise path
 
 local PLUGINDIR = path(EXEDIR .. "/data/plugins/fallbackfonts")
+local MAX_CODEPOINT = 0xFFFF
 
 ---------------------------------------------------------------
 ---- Configuraation
@@ -143,7 +144,7 @@ local function generate_fontmap()
     while true do
       coroutine.yield()
       local stat = system.get_file_info(config.fallback_fonts.fontmap_file)
-      if stat and stat.size > 0xFFFF then
+      if stat and stat.size > MAX_CODEPOINT then
         core.log("Fontmap generated.")
         fontmap:open()
         return validate_fontmap()
