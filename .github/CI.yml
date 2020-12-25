@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  deploy:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Compile
+        uses: msys2/setup-msys2@v2
+        with:
+          update: true
+          install: >-
+            base-devel
+            zip
+            mingw-w64-x86_64-toolchain
+        shell: msys2 {0}
+        run: |
+          ./build_release.sh
+      - name: Collect artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: 'win32-plugin.zip'
+          path: 'plugin.zip'
