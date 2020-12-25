@@ -1,14 +1,14 @@
 #!/bin/bash
 
-cflags="-Wall -shared -fPIC -llua -Ilite/src/lib/lua52"
+cflags="-Wall -O3 -g -std=gnu11 -fno-strict-aliasing"
 
 if [[ $* == *windows* ]]; then
   platform="windows"
-  outfile="glyphindex.dll"
+  outfile="mkfontmap.exe"
   compiler="x86_64-w64-mingw32-gcc"
 else
   platform="unix"
-  outfile="glyphindex.so"
+  outfile="mkfontmap"
   compiler="gcc"
 fi
 
@@ -16,6 +16,6 @@ if command -v ccache >/dev/null; then
   compiler="ccache $compiler"
 fi
 
+echo "Compiling ($platform)..."
+$compiler $cflags backupfont.c -o $outfile
 
-echo "compiling ($platform)..."
-$compiler $cflags glyphindex.c $outfile
