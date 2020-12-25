@@ -1,5 +1,5 @@
 #!/bin/bash
-cflags="-Wall -O3 -g -std=gnu11 -fno-strict-aliasing -lm"
+cflags="-Wall -O3 -g -std=gnu11 -fno-strict-aliasing"
 
 if [[ $* == *windows* ]]; then
   platform="windows"
@@ -16,5 +16,5 @@ if command -v ccache >/dev/null; then
 fi
 
 echo "Compiling ($platform)..."
-$compiler $cflags mkfontmap.c -o $outfile
+$compiler $cflags mkfontmap.c -lm -o $outfile
 
