@@ -219,13 +219,9 @@ function DocView:get_col_x_offset(line, col)
   end
 
   local result = 0
-  if self.linexbuf == nil then self.linexbuf = {} end
-  if self.linexbuf[line] == nil then
-    -- generate it on the fly; less optimal but will work
     local text = self.doc.lines[line]
     if not text then return 0 end
 
-    self.linexbuf[line] = {}
     local cps = utf8_explode(text)
     for i, cp in ipairs(cps.codepoints) do
       if i == col then break end
@@ -255,8 +251,6 @@ function DocView:draw_line_text(idx, x, y)
   end
 
   -- highly inefficient, but I don't think there is any other choice
-  if self.linexbuf == nil then self.linexbuf = {} end
-  if self.linexbuf[idx] == nil then self.linexbuf[idx] = {} end
   local tx, ty = x, y + self:get_line_text_y_offset()
   local col = 1
   for _, type, text in self.doc.highlighter:each_token(idx) do
@@ -271,7 +265,6 @@ function DocView:draw_line_text(idx, x, y)
       renderer.draw_text(font, chr, tx, ty, color)
       local fw = font:get_width(chr)
       tx = tx + fw
-      self.linexbuf[idx][col] = fw
       col = col + 1
     end
   end
