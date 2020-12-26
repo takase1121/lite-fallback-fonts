@@ -18,7 +18,7 @@ local MAX_CODEPOINT = 0xFFFF
 ---- Configuraation
 ---------------------------------------------------------------
 config.fallback_fonts = {}
-config.fallback_fonts.enable = true
+config.fallback_fonts.enable = false
 config.fallback_fonts.preload_range = { lower = 0, upper = 0xFF }
 config.fallback_fonts.fontmap_file = path(PLUGINDIR .. "/fontmap.bin")
 config.fallback_fonts.fonts = {
@@ -116,7 +116,6 @@ end
 ---- MAIN
 -----------------------------------------------------------
 local fontmap, fonts
-config.fallback_fonts.enable = false -- disable this during start up
 
 --- check if fontmap is generated properly
 local function validate_fontmap()
