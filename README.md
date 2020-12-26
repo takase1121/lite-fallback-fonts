@@ -45,4 +45,4 @@ key | Usage
 ### Known issues
 - ~~Caret and selection don't work. I may consider working on them but it won't be that easy.~~ fixed.
 - IME selection box does not show up. This is a bug from lite and should be worked on there instead.
-- Anything related to mouse does not work correctly.
+- ~~Anything related to mouse does not work correctly.~~ fixed.
