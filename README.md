@@ -20,7 +20,7 @@ After configuring `config.fallback_fonts`, users are expected to call `initializ
 -- other init.lua contents
 
 local initialize = require "plugins.fallbackfonts"
-config.fallback_fonts.enable = true
+config.fallback_fonts.enable = false
 config.fallback_fonts.preload_range = { lower = 0, upper = 0xFF }
 config.fallback_fonts.fontmap_file = path(PLUGINDIR .. "/fontmap.bin")
 config.fallback_fonts.fonts = {
@@ -45,3 +45,4 @@ key | Usage
 ### Known issues
 - ~~Caret and selection don't work. I may consider working on them but it won't be that easy.~~ fixed.
 - IME selection box does not show up. This is a bug from lite and should be worked on there instead.
+- Anything related to mouse does not work correctly.
