@@ -63,6 +63,7 @@ end
 
 --- Get one font index from the file
 function Fontmap:get_one(i)
+  if i > MAX_CODEPOINT then return 0 end
   local offset = self.map_offset + i
   self.f:seek("set", offset)
   return string.byte(self.f:read(1))
@@ -71,6 +72,7 @@ end
 --- Get font index in a range from the file
 --- More efficient because it performs only 1 read
 function Fontmap:get_range(i, j)
+  if i > MAX_CODEPOINT or j > MAX_CODEPOINT then return 0 end
   self.f:seek("set", self.map_offset + i)
   local d = self.f:read(j - i)
   local bytes = {string.byte(d, 1, -1)}
