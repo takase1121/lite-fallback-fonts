@@ -20,4 +20,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: 'plugin'
-          path: 'plugin.zip'
+          path: |
+            *.lua
+            mkfontmap
+            mkfontmap.exe
