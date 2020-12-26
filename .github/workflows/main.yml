@@ -3,6 +3,11 @@ name: CI
 on:
   push:
     branches: [master]
+    paths-ignore: 
+      - README.md
+      - LICENSE
+      - .luacheckrc
+      - .gitignore
   pull_request:
     branches: [master]
 
