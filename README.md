@@ -3,6 +3,8 @@
 This [lite](https://github.com/rxi/lite) plugin provides a system to load multiple fonts to render different glyphs.
 As an example, you may specify a CJK-compatible font as fallback to render CJK characters.
 
+> This plugin only covers basic codepoints from U+0000 to U+FFFF, other codepoints are not and will not be supported. This is sufficient for most use cases.
+
 ### Get this plugin
 From [GitHub Actions](https://github.com/takase1121/lite-fallback-fonts/actions)
 
