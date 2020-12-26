@@ -117,6 +117,22 @@ end
 -----------------------------------------------------------
 local fontmap, fonts
 
+--- Get a character from text
+local function get_char(text, cps, i)
+  local cp = cps.codepoints[i]
+  local curpos = cps.bytepos[i]
+  local nextpos = (cps.bytepos[i + 1] or #text) - 1
+  return string.sub(text, curpos, nextpos)
+end
+
+--- Get width of a codepoint in text
+local function codepoint_width(text, cps, i)
+  local cp = cps.codepoints[i]
+  local chr = get_char(text, cps, i)
+  local font = fonts[fontmap:cp(cp)] or style.code_font
+  return font:get_width(chr)
+end
+
 --- check if fontmap is generated properly
 local function validate_fontmap()
   local failed = 0
@@ -219,28 +235,39 @@ function DocView:get_col_x_offset(line, col)
   end
 
   local result = 0
-    local text = self.doc.lines[line]
-    if not text then return 0 end
+  local text = self.doc.lines[line]
+  if not text then return 0 end
 
-    local cps = utf8_explode(text)
-    for i, cp in ipairs(cps.codepoints) do
-      if i == col then break end
-      local curpos = cps.bytepos[i]
-      local nextpos = (cps.bytepos[i + 1] or #text) - 1
-      local chr = string.sub(text, curpos, nextpos)
-      local font = fonts[fontmap:cp(cp)] or style.code_font
-      local fw = font:get_width(chr)
-      result = result + fw
-      self.linexbuf[line][i] = fw
-    end
-  else
-    local xoffset = self.linexbuf[line]
-    for i, v in ipairs(xoffset) do
-      if i == col then break end
-      result = result + v
-    end
+  local cps = utf8_explode(text)
+  for i, _ in ipairs(cps.codepoints) do
+    if i == col then break end
+    local fw = codepoint_width(text, cps, i)
+    result = result + fw
   end
   return result
+end
+
+local get_x_offset_col = DocView.get_x_offset_col
+function DocView:get_x_offset_col(line, x)
+  if not config.fallback_fonts.enable then
+    return get_x_offset_col(self, line, x)
+  end
+
+  local text = self.doc.lines[line]
+  local cps = utf8_explode(text)
+  local xoffset, last_i, i = 0, 1, 1
+  for j, _ in ipairs(cps.codepoints) do
+    local char = get_char(text, cps, j)
+    local w = codepoint_width(text, cps, j)
+    if xoffset >= x then
+      return (xoffset - x > w / 2) and last_i or i
+    end
+    xoffset = xoffset + w
+    last_i = i
+    i = i + #char
+  end
+
+  return #text
 end
 
 local draw_line_text = DocView.draw_line_text -- save the original just in case it is disabled
