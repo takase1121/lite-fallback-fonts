@@ -8,6 +8,7 @@ on:
       - LICENSE
       - .luacheckrc
       - .gitignore
+      - assets/*
   pull_request:
     branches: [master]
 
