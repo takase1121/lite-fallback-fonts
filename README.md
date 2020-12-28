@@ -48,3 +48,4 @@ key | Usage
 - ~~Caret and selection don't work. I may consider working on them but it won't be that easy.~~ fixed.
 - ~~IME selection box does not show up. This is a bug from lite and should be worked on there instead.~~ A bug with SDL2.
 - ~~Anything related to mouse does not work correctly.~~ fixed.
+- The caret just doesn't want to work properly with multi-byte sequences. It just doesn't like it. I need help fixing this.
