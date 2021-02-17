@@ -183,7 +183,6 @@ local function generate_fontmap()
   core.add_thread(wait)
 end
 
--- initialization function. Must be called after setting configs in init.lua
 local function initialize()
   fontmap = Fontmap(config.fallback_fonts.fontmap_file, config.fallback_fonts.preload_range)
   fonts = {}
@@ -203,6 +202,12 @@ local function initialize()
     fontmap:open()
     validate_fontmap()
   end
+end
+
+local init = core.init
+function core.init()
+  init()
+  initialize()
 end
 
 local function delete_fontmap()
